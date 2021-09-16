@@ -1,0 +1,7 @@
+ARGS
+
+INPUT
+add hi 3
+OUTPUT
+ERROR:
+END
