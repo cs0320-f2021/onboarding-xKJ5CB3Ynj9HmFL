@@ -3,4 +3,5 @@ stars data/stars/one-star.csv
 naive_neighbors 1 "Lonely Star"
 OUTPUT
 Read 1 stars from data/stars/one-star.csv
+1
 END

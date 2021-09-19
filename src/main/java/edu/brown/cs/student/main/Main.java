@@ -6,7 +6,10 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Map;
+import java.util.PriorityQueue;
 
 import com.google.common.collect.ImmutableMap;
 
@@ -60,15 +63,13 @@ public final class Main {
       runSparkServer((int) options.valueOf("port"));
     }
 
-    // TODO: Add your REPL here!
     try (BufferedReader br = new BufferedReader(new InputStreamReader(System.in))) {
       String input;
       while ((input = br.readLine()) != null) {
         try {
+          ArrayList<Star> stars = new ArrayList<Star>();
           input = input.trim();
           String[] arguments = input.split(" ");
-          // TODO: complete your REPL by adding commands for addition "add" and subtraction
-          //  "subtract"
           if (arguments[0].equals("add")) {
             MathBot x = new MathBot();
             System.out.println(x.add(Double.parseDouble(arguments[1]),
@@ -77,6 +78,42 @@ public final class Main {
             MathBot x = new MathBot();
             System.out.println(x.subtract(Double.parseDouble(arguments[1]),
                     Double.parseDouble(arguments[2])));
+          } else if (arguments[0].equals("stars")) {
+            stars = this.stars(arguments[1]);
+          } else if (arguments[0].equals("naive_neighbors")) {
+            Double[] coordinates = new Double[3];
+            if (arguments.length == 5) {
+              coordinates[0] = Double.parseDouble(arguments[2]);
+              coordinates[1] = Double.parseDouble(arguments[3]);
+              coordinates[2] = Double.parseDouble(arguments[4]);
+            } else if (arguments.length == 3) {
+              Star inputtedStar = null;
+              for (int i = 0; i < stars.size(); i++) {
+                if (stars.get(i).getProperName().equals(arguments[2])) {
+                  inputtedStar = stars.get(i);
+                }
+              }
+              coordinates[0] = inputtedStar.getX();
+              coordinates[1] = inputtedStar.getY();
+              coordinates[2] = inputtedStar.getZ();
+            }
+            Comparator<Star> starDistanceComparator = new Comparator<Star>() {
+              public int compare(Star star1, Star star2) {
+                return Double.compare(star1.calcDistance(coordinates[0],
+                        coordinates[1], coordinates[2]),
+                        star2.calcDistance(coordinates[0], coordinates[1], coordinates[2]));
+              }
+            };
+            PriorityQueue<Star> nearestNeighbors = new PriorityQueue<>(starDistanceComparator);
+            for (int i = 0; i < stars.size(); i++) {
+              nearestNeighbors.add(stars.get(i));
+            }
+            int i = 0;
+            while (i < Double.parseDouble(arguments[1])) {
+              String starName = nearestNeighbors.poll().getProperName();
+              System.out.println(starName);
+            }
+
           }
         } catch (Exception e) {
           // e.printStackTrace();
@@ -89,6 +126,13 @@ public final class Main {
     }
 
   }
+
+  private ArrayList<Star> stars(String fileName) {
+    CSVstars manyStars = new CSVstars();
+    return manyStars.fillStars(fileName);
+  }
+
+
 
   private static FreeMarkerEngine createEngine() {
     Configuration config = new Configuration(Configuration.VERSION_2_3_0);
