@@ -98,6 +98,12 @@ public final class Main {
               coordinates[2] = inputtedStar.getZ();
             }
             Comparator<Star> starDistanceComparator = new Comparator<Star>() {
+              /**
+               * Custom Comparator for the Priority Queue
+               * @param star1 first star object
+               * @param star2 second star object you are comparing to first star
+               * @return an int whose value will determine the order of the Priority Queue
+               */
               public int compare(Star star1, Star star2) {
                 return Double.compare(star1.calcDistance(coordinates[0],
                         coordinates[1], coordinates[2]),
@@ -127,6 +133,11 @@ public final class Main {
 
   }
 
+  /**
+   * processes the data in the given CSV file and stores it
+   * @param fileName
+   * @return an ArrayList of star objects
+   */
   private ArrayList<Star> stars(String fileName) {
     CSVstars manyStars = new CSVstars();
     return manyStars.fillStars(fileName);

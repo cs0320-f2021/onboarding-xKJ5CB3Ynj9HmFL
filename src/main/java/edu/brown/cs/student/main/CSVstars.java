@@ -8,9 +8,17 @@ import java.util.ArrayList;
 public class CSVstars {
   private ArrayList<Star> stars = new ArrayList<Star>();
 
+  /**
+   * the constructor
+   */
   public CSVstars() {
   }
 
+  /**
+   * creates an ArrayList of stars based on the data in the CSV file and set it as the field
+   * @param fileName
+   * @return
+   */
   public ArrayList<Star> fillStars(String fileName) {
     try (BufferedReader br = new BufferedReader(new FileReader(fileName))) {
       String line;
